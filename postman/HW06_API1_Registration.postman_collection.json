@@ -1,0 +1,2090 @@
+{
+  "info": {
+    "_postman_id": "aa745b3c-ca96-4aaf-b752-09054b9be74a",
+    "name": "HW06 API 1 - FR-01 Account Registration",
+    "description": "Software Testing HW06. Audited + human-extended executable suite for POST /api/register. Every request receives X-Student-Id from the collection-level pre-request script.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const sid = pm.environment.get(\"studentId\") || \"23127531\";",
+          "pm.request.headers.upsert({ key: \"X-Student-Id\", value: sid });",
+          "console.log(`[HW06] ${pm.info.requestName} | X-Student-Id: ${sid}`);"
+        ]
+      }
+    }
+  ],
+  "variable": [],
+  "item": [
+    {
+      "name": "REG-AI-001 - registration partition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Nguyen Van A\",\"email\":\"hw06.reg001@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Audited executable case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Success schema matches specification\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); pm.expect(j.id).to.be.a(\"number\"); });",
+              "pm.test(\"No password or internal fields are exposed\", function () { const j = pm.response.json(); [\"password\",\"role\",\"login_attempts\",\"locked_until\",\"reset_token\"].forEach(k => pm.expect(j).to.not.have.property(k)); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-002 - registration partition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Nguyễn Văn Ánh\",\"email\":\"hw06.reg002@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Audited executable case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Success schema matches specification\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); pm.expect(j.id).to.be.a(\"number\"); });",
+              "pm.test(\"No password or internal fields are exposed\", function () { const j = pm.response.json(); [\"password\",\"role\",\"login_attempts\",\"locked_until\",\"reset_token\"].forEach(k => pm.expect(j).to.not.have.property(k)); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-003 - registration partition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Anne-Marie O'Neil\",\"email\":\"hw06.reg003@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Audited executable case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Success schema matches specification\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); pm.expect(j.id).to.be.a(\"number\"); });",
+              "pm.test(\"No password or internal fields are exposed\", function () { const j = pm.response.json(); [\"password\",\"role\",\"login_attempts\",\"locked_until\",\"reset_token\"].forEach(k => pm.expect(j).to.not.have.property(k)); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-004 - registration partition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 004\",\"email\":\"HW06.REG004@EXAMPLE.COM\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Audited executable case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Success schema matches specification\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); pm.expect(j.id).to.be.a(\"number\"); });",
+              "pm.test(\"No password or internal fields are exposed\", function () { const j = pm.response.json(); [\"password\",\"role\",\"login_attempts\",\"locked_until\",\"reset_token\"].forEach(k => pm.expect(j).to.not.have.property(k)); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-005 - registration partition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 005\",\"email\":\"user@sub.example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Audited executable case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Success schema matches specification\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); pm.expect(j.id).to.be.a(\"number\"); });",
+              "pm.test(\"No password or internal fields are exposed\", function () { const j = pm.response.json(); [\"password\",\"role\",\"login_attempts\",\"locked_until\",\"reset_token\"].forEach(k => pm.expect(j).to.not.have.property(k)); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-006 - registration partition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 006\",\"email\":\"user+hw06@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Audited executable case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Success schema matches specification\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); pm.expect(j.id).to.be.a(\"number\"); });",
+              "pm.test(\"No password or internal fields are exposed\", function () { const j = pm.response.json(); [\"password\",\"role\",\"login_attempts\",\"locked_until\",\"reset_token\"].forEach(k => pm.expect(j).to.not.have.property(k)); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-007 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"\",\"email\":\"hw06.reg007@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-008 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"   \",\"email\":\"hw06.reg008@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-009 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"hw06.reg009@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-010 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":null,\"email\":\"hw06.reg010@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-011 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":12345,\"email\":\"hw06.reg011@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-014 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 014\",\"email\":\"\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-015 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 015\",\"email\":\"   \",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-016 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 016\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-017 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 017\",\"email\":null,\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-018 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 018\",\"email\":\"userexample.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-019 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 019\",\"email\":\"@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-020 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 020\",\"email\":\"user@\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-021 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 021\",\"email\":\"a@b@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-022 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 022\",\"email\":\"user..name@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-023 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 023\",\"email\":\"  hw06.reg023@example.com  \",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-024 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 024\",\"email\":\"hw06.reg024@example.com\",\"password\":\"\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-025 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 025\",\"email\":\"hw06.reg025@example.com\",\"password\":\"   \"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-026 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 026\",\"email\":\"hw06.reg026@example.com\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-027 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 027\",\"email\":\"hw06.reg027@example.com\",\"password\":null}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-028 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 028\",\"email\":\"hw06.reg028@example.com\",\"password\":\"A\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-029 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 029\",\"email\":\"hw06.reg029@example.com\",\"password\":\"abcdefgh\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-030 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 030\",\"email\":\"hw06.reg030@example.com\",\"password\":\"12345678\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-031 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 031\",\"email\":\"hw06.reg031@example.com\",\"password\":\"!@#$%^&*\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-034 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-036 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[{\"name\":\"User 036\",\"email\":\"hw06.reg036@example.com\",\"password\":\"Password123!\"}]"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-audited characterization case; no invented validation rule."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });",
+              "pm.test(\"If registration succeeds, success schema is valid\", function () { if (pm.response.code === 200) { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-012 - object name robustness",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":{\"first\":\"Nguyen\"},\"email\":\"hw06.reg012@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Robustness case; type rule not specified."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-013 - long name robustness",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\", \"email\": \"hw06.reg013@example.com\", \"password\": \"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Boundary robustness; no maximum length in supplied spec."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-032 - Unicode password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 032\",\"email\":\"hw06.reg032@example.com\",\"password\":\"MậtKhẩu123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Success schema matches specification\", function () { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\", \"User registered successfully\"); pm.expect(j).to.have.property(\"id\"); pm.expect(j.id).to.be.a(\"number\"); });",
+              "pm.test(\"No password or internal fields are exposed\", function () { const j = pm.response.json(); [\"password\",\"role\",\"login_attempts\",\"locked_until\",\"reset_token\"].forEach(k => pm.expect(j).to.not.have.property(k)); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-033 - long password robustness",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\": \"User 033\", \"email\": \"hw06.reg033@example.com\", \"password\": \"A1!xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Boundary robustness; no maximum length in supplied spec."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-035 - malformed JSON",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 035\",\"email\":\"hw06.reg035@example.com\",\"password\":\"Password123!\""
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Malformed JSON is rejected with 400\", function () { pm.response.to.have.status(400); });",
+              "pm.test(\"Server does not expose a successful registration response\", function () { pm.expect(pm.response.text()).to.not.include(\"User registered successfully\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-037 - role mass assignment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 037\",\"email\":\"hw06.reg037@example.com\",\"password\":\"Password123!\",\"role\":\"admin\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Mass-assignment security test."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Registration succeeds\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Client role cannot escalate privileges\", function (done) { pm.sendRequest({url: pm.environment.get(\"baseUrl\") + \"/api/login\", method:\"POST\", header:{\"Content-Type\":\"application/json\",\"X-Student-Id\":pm.environment.get(\"studentId\")}, body:{mode:\"raw\", raw:JSON.stringify({email:\"hw06.reg037@example.com\",password:\"Password123!\"})}}, function(err,res){ pm.expect(err).to.equal(null); pm.expect(res.code).to.equal(200); const j=res.json(); pm.expect(j.user.role).to.equal(\"user\"); done(); }); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-038 - id mass assignment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":999999,\"name\":\"User 038\",\"email\":\"hw06.reg038@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Registration succeeds\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Client cannot force server-generated id\", function () { const j=pm.response.json(); pm.expect(j.id).to.not.equal(999999); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-039 - SQL injection payload",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 039\",\"email\":\"x@example.com' OR 1=1 --\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"SQL payload does not cause server error\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"No SQL error details are exposed\", function () { pm.expect(pm.response.text().toLowerCase()).to.not.include(\"syntax error\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-040 - stored script payload",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"<script>alert(1)</script>\",\"email\":\"hw06.reg040@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Registration endpoint checks inert handling only; execution at a rendering sink is out of scope for this request."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-041A - duplicate email setup",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"First\",\"email\":\"hw06.duplicate@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Setup step for REG-AI-041."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-041B - duplicate email second registration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"First\",\"email\":\"hw06.duplicate@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Current implementation characterization; uniqueness is not stated by supplied spec."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Duplicate registration behavior is characterized without server crash\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation accepts duplicate email\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-AI-042 - exact success schema",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"User 042\",\"email\":\"hw06.reg042@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Response has exactly documented fields\", function () { const j=pm.response.json(); pm.expect(Object.keys(j).sort()).to.eql([\"id\",\"message\"]); pm.expect(j.message).to.equal(\"User registered successfully\"); pm.expect(j.id).to.be.a(\"number\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-HUM-001 - text/plain media type",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Human 001\",\"email\":\"hw06.hum001@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-added protocol robustness case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-HUM-002 - missing Content-Type",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Human 002\",\"email\":\"hw06.hum002@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-added protocol robustness case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-HUM-003 - null JSON body",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "null"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-added body-shape robustness case."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-HUM-004A - duplicate identity setup",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"First Owner\",\"email\":\"hw06.identity@example.com\",\"password\":\"Password111!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Setup step for REG-HUM-004."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-HUM-004B - duplicate identity with different credentials",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Second Owner\",\"email\":\"hw06.identity@example.com\",\"password\":\"Different222!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-added state/identity characterization."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Second registration does not crash server\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation accepts same email with different credentials\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-HUM-005A - email case setup",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Case One\",\"email\":\"CaseUser@example.com\",\"password\":\"Password123!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Setup step for REG-HUM-005."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Response is bounded and server remains responsive\", function () { pm.expect(pm.response.responseSize).to.be.below(1000000); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-HUM-005B - email differs only by case",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Case Two\",\"email\":\"caseuser@example.com\",\"password\":\"Password456!\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-added normalization/state characterization."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Case-variant registration does not crash server\", function () { pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation treats case-variant email as a separate accepted registration\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "REG-HUM-006 - security-field mass assignment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Human 006\",\"email\":\"hw06.hum006@example.com\",\"password\":\"Password123!\",\"login_attempts\":99,\"locked_until\":\"2099-01-01T00:00:00Z\",\"reset_token\":\"attacker-token\"}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "Human-added mass-assignment test based on reviewed users table schema."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Registration succeeds\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Sensitive server-owned account fields are ignored\", function (done) { pm.sendRequest({url: pm.environment.get(\"baseUrl\") + \"/api/login\", method:\"POST\", header:{\"Content-Type\":\"application/json\",\"X-Student-Id\":pm.environment.get(\"studentId\")}, body:{mode:\"raw\", raw:JSON.stringify({email:\"hw06.hum006@example.com\",password:\"Password123!\"})}}, function(err,res){ pm.expect(err).to.equal(null); pm.expect(res.code).to.equal(200); const u=res.json().user; pm.expect(u.login_attempts).to.not.equal(99); pm.expect(u.locked_until).to.not.equal(\"2099-01-01T00:00:00Z\"); pm.expect(u.reset_token).to.not.equal(\"attacker-token\"); done(); }); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
