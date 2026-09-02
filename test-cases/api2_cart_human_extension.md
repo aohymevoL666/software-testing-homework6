@@ -1,0 +1,24 @@
+# HW06 — API 2 Human-Designed Extension
+
+**Feature:** FR-07 Shopping Cart  
+**Endpoint:** `POST /api/cart`  
+**Human-added cases:** 6  
+
+These cases were added after auditing the AI-generated suite. They target interactions the AI missed: multi-request metadata inconsistency, two-user isolation, stale but valid JWTs, nested payloads, downstream persistence of unexpected fields, and process-memory cart state.
+
+## Added test cases
+
+| ID | Category | Objective | Request / Test Data | Final Oracle | Why the AI missed it |
+|---|---|---|---|---|---|
+| CART-HUM-001 | State / repeated add integrity | Add the same product id twice but use different client-supplied price and name values. | 1) POST id=1, canonical-looking name/price, quantity=1. 2) POST id=1 again with `name="Tampered Name"`, `price=1`, quantity=1. | Both requests may succeed under the current implementation, but the test must verify the resulting cart state and document whether contradictory metadata for the same product id is stored as separate entries. Do not assume merge semantics because the supplied spec does not define them. | The AI tested duplicate add and metadata tampering separately, but not their interaction across stateful requests. |
+| CART-HUM-002 | Security / user isolation | User A adds an item; User B independently adds a different item; verify each cart contains only its own user's entries. | Use two valid JWTs. User A POSTs product 1; User B POSTs product 2; helper GET `/api/cart` under each token. | Each authenticated user sees only the cart indexed by their own JWT user id. Cross-user leakage is a genuine security defect. | The AI proposed isolation conceptually but did not define a full two-user bidirectional verification flow. |
+| CART-HUM-003 | Authentication / stale token | Use a previously issued valid JWT after changing the corresponding user's stored role or profile data. | Authenticate a user, retain JWT, change non-id account state, then POST `/api/cart` with the old JWT. | Characterize whether the old JWT remains accepted. Because the middleware trusts signed JWT claims and does not re-read user state, acceptance is expected unless token revocation is specified elsewhere. Do not classify this as a bug without an explicit revocation requirement. | The AI covered malformed/tampered tokens but not a syntactically valid token whose backing account state changes after issuance. |
+| CART-HUM-004 | Body / nested structure | Send nested objects for cart item fields instead of primitive values. | `{"id":{"value":1},"name":{"text":"Nested"},"price":{"amount":30000000},"quantity":{"value":1}}` | The server must handle the request without an unhandled 5xx error. Exact acceptance/rejection is characterization because no formal schema validation rule is supplied. | The AI varied primitive types but did not test nested-object payloads across all cart fields. |
+| CART-HUM-005 | Security / extra-field persistence | Verify whether arbitrary unexpected fields are returned later from the user's cart. | POST body includes `{"id":1,"name":"iPhone 15 Pro Max","price":30000000,"quantity":1,"debug":"secret-marker","user_id":999}` then helper GET `/api/cart`. | Authenticated ownership must still be based on the JWT user id. Record whether arbitrary extra fields are persisted and returned. Persistence of arbitrary client-controlled metadata is a data-integrity finding, but not automatically a spec violation because the supplied spec does not define strict rejection of extra properties. | The AI checked extra fields only at POST time and did not verify their downstream persistence through GET. |
+| CART-HUM-006 | State / process-memory persistence | Verify cart behavior across backend restart because cart state is held only in process memory. | User adds an item and confirms it via GET `/api/cart`; restart backend; authenticate again if needed; GET `/api/cart`. | Document whether cart contents disappear after restart. Since persistence requirements are not stated in the supplied API spec, loss of cart state should be recorded as implementation behavior unless another functional requirement explicitly requires persistence. | The AI focused on request-level state transitions and did not inspect implementation storage lifetime. |
+
+## Extension rationale
+
+The human additions intentionally avoid repeating simple numeric partitions. Instead, they combine authentication and cart state across multiple requests, and they use implementation knowledge only to design stronger tests—not to invent missing requirements.
+
+The most important additions are the two-user isolation test and the verification that arbitrary client-controlled fields or contradictory product metadata cannot accidentally affect authenticated ownership.
