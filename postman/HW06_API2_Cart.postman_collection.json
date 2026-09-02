@@ -1,0 +1,2732 @@
+{
+  "info": {
+    "_postman_id": "b8b095be-4dbf-437e-b231-1c12ebb65a13",
+    "name": "HW06 API 2 - FR-07 Shopping Cart",
+    "description": "Audited and human-extended executable suite for POST /api/cart. CART-HUM-006 (backend restart persistence) is executed manually because a Postman request cannot restart the SUT process.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const sid = pm.environment.get(\"studentId\") || \"23127531\";",
+          "pm.request.headers.upsert({key:\"X-Student-Id\", value:sid});",
+          "console.log(`[HW06] ${pm.info.requestName} | X-Student-Id: ${sid}`);"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "SETUP-00 - initialize run variables",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "description": "Initializes unique account data for the API 2 Newman run."
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const rid = Date.now().toString();",
+              "pm.environment.set(\"runId\", rid);",
+              "pm.environment.set(\"userEmailA\", `hw06.cart.a.${rid}@example.com`);",
+              "pm.environment.set(\"userEmailB\", `hw06.cart.b.${rid}@example.com`);",
+              "pm.environment.set(\"userPasswordA\", \"Password123!\");",
+              "pm.environment.set(\"userPasswordB\", \"Password456!\");"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Backend reachable\", function(){ pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "SETUP-01 - register User A",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"HW06 Cart User A\",\"email\":\"{{userEmailA}}\",\"password\":\"{{userPasswordA}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"User A registration succeeds\", function(){ pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "SETUP-02 - login User A",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "login"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"{{userEmailA}}\",\"password\":\"{{userPasswordA}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"User A login succeeds\", function(){ pm.response.to.have.status(200); });",
+              "const j=pm.response.json(); pm.environment.set(\"userTokenA\", j.token); pm.environment.set(\"userIdA\", j.user.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "SETUP-03 - register User B",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"HW06 Cart User B\",\"email\":\"{{userEmailB}}\",\"password\":\"{{userPasswordB}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"User B registration succeeds\", function(){ pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "SETUP-04 - login User B",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "login"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"{{userEmailB}}\",\"password\":\"{{userPasswordB}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"User B login succeeds\", function(){ pm.response.to.have.status(200); });",
+              "const j=pm.response.json(); pm.environment.set(\"userTokenB\", j.token); pm.environment.set(\"userIdB\", j.user.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-001 - audited positive",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-002 - audited positive",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":2}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-003 - audited positive",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":2,\"name\":\"Samsung Galaxy S24 Ultra\",\"price\":28000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-011 - audited positive",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":3,\"name\":\"MacBook Pro M3\",\"price\":45000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-019 - audited positive",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":2,\"name\":\"Samsung Galaxy S24 Ultra\",\"price\":28000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-042 - audited positive",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Response has exact documented success field\", function(){ const j=pm.response.json(); pm.expect(Object.keys(j)).to.eql([\"message\"]); pm.expect(j.message).to.equal(\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-004 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":0}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-005 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":-1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-006 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":\"2\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-007 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1.5}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-008 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":null}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-009 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-010 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":2147483647}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-012 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":0,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-013 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":-1000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-014 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":\"30000000\",\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-015 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":29999.99,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-016 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":null,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-017 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-018 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":1,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-020 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":0,\"name\":\"Unknown\",\"price\":1000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-021 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":-1,\"name\":\"Unknown\",\"price\":1000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-022 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":999999,\"name\":\"Ghost Product\",\"price\":1000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-023 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":\"1\",\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-024 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":null,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-025 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-026 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"Điện thoại cao cấp\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-027 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-028 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"   \",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-029 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-030 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"Attacker Controlled Name\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-036 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-038 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "[{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}]"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-041 - characterization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1,\"user_id\":999,\"isAdmin\":true}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });",
+              "pm.test(\"Current implementation returns documented success on accepted body\", function(){ if(pm.response.code===200){ pm.expect(pm.response.json().message).to.equal(\"Added to cart\"); } });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-031 - no Authorization",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Missing token returns 401\", function(){ pm.response.to.have.status(401); });",
+              "pm.test(\"Unauthorized error schema\", function(){ pm.expect(pm.response.json().error).to.equal(\"Unauthorized\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-032 - Bearer with no token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Empty bearer token returns 401\", function(){ pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-033 - malformed JWT",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer not-a-jwt",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Malformed JWT returns 403\", function(){ pm.response.to.have.status(403); });",
+              "pm.test(\"Forbidden error schema\", function(){ pm.expect(pm.response.json().error).to.equal(\"Forbidden\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-034 - tampered JWT",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tamperedTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const t=pm.environment.get(\"userTokenA\");",
+              "const last=t.slice(-1); const repl=last===\"a\"?\"b\":\"a\";",
+              "pm.environment.set(\"tamperedTokenA\", t.slice(0,-1)+repl);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Tampered JWT returns 403\", function(){ pm.response.to.have.status(403); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-035 - wrong auth scheme",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic abc",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Wrong-scheme extracted token fails verification\", function(){ pm.response.to.have.status(403); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-037 - malformed JSON",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Malformed JSON returns 400\", function(){ pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-039A - repeated add first",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-039B - repeated add second",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":1,\"name\":\"iPhone 15 Pro Max\",\"price\":30000000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-039C - verify repeated-add state",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Cart contains at least two matching product entries after repeated adds\", function(){ const a=pm.response.json().filter(x=>x && x.id===1 && x.name===\"iPhone 15 Pro Max\"); pm.expect(a.length).to.be.at.least(2); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-040A - User A add isolation marker",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":700001,\"name\":\"USER_A_ONLY\",\"price\":111,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-AI-040B - User B verify no User A marker",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenB}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"User B cannot see User A marker\", function(){ const arr=pm.response.json(); pm.expect(arr.some(x=>x && x.name===\"USER_A_ONLY\")).to.equal(false); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-001A - baseline metadata",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":800001,\"name\":\"Canonical Name\",\"price\":500000,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-001B - contradictory metadata",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":800001,\"name\":\"Tampered Name\",\"price\":1,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-001C - verify contradictory metadata state",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Same id can coexist with contradictory metadata in current implementation\", function(){ const a=pm.response.json().filter(x=>x && x.id===800001); pm.expect(a.length).to.be.at.least(2); pm.expect(a.some(x=>x.name===\"Canonical Name\" && x.price===500000)).to.equal(true); pm.expect(a.some(x=>x.name===\"Tampered Name\" && x.price===1)).to.equal(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-002A - User A add private marker",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":810001,\"name\":\"A_PRIVATE\",\"price\":101,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-002B - User B add private marker",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenB}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":820001,\"name\":\"B_PRIVATE\",\"price\":202,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-002C - verify User A cart",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"User A sees A_PRIVATE\", function(){ const a=pm.response.json(); pm.expect(a.some(x=>x && x.name===\"A_PRIVATE\")).to.equal(true); });",
+              "pm.test(\"User A does not see B_PRIVATE\", function(){ const a=pm.response.json(); pm.expect(a.some(x=>x && x.name===\"B_PRIVATE\")).to.equal(false); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-002D - verify User B cart",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenB}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"User B sees B_PRIVATE\", function(){ const a=pm.response.json(); pm.expect(a.some(x=>x && x.name===\"B_PRIVATE\")).to.equal(true); });",
+              "pm.test(\"User B does not see A_PRIVATE\", function(){ const a=pm.response.json(); pm.expect(a.some(x=>x && x.name===\"A_PRIVATE\")).to.equal(false); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-003A - update profile after JWT issuance",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/users/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "me"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"HW06 Cart User A Updated\",\"shipping_address\":\"Updated address\",\"phone\":\"0900000000\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Profile update succeeds\", function(){ pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-003B - old JWT still accepted for cart",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":830001,\"name\":\"STALE_TOKEN_CHARACTERIZATION\",\"price\":303,\"quantity\":1}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Previously issued signed JWT remains accepted after profile-state change\", function(){ pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-004 - nested object payload",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":{\"value\":1},\"name\":{\"text\":\"Nested\"},\"price\":{\"amount\":30000000},\"quantity\":{\"value\":1}}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Server does not return 5xx\", function(){ pm.expect(pm.response.code).to.be.below(500); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-005A - post extra-field marker",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\":840001,\"name\":\"EXTRA_FIELD_TEST\",\"price\":30000000,\"quantity\":1,\"debug\":\"secret-marker\",\"user_id\":999}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Success message matches spec\", function(){ const j=pm.response.json(); pm.expect(j).to.have.property(\"message\",\"Added to cart\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART-HUM-005B - verify extra-field persistence",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{userTokenA}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/cart",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cart"
+          ]
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"JWT ownership remains User A\", function(){ pm.response.to.have.status(200); });",
+              "pm.test(\"Current implementation persists arbitrary extra fields\", function(){ const x=pm.response.json().find(i=>i && i.id===840001); pm.expect(x).to.exist; pm.expect(x.debug).to.equal(\"secret-marker\"); pm.expect(x.user_id).to.equal(999); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
