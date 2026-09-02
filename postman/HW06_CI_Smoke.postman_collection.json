@@ -1,0 +1,53 @@
+{
+  "info": {
+    "_postman_id": "d8cef0be-c88a-4242-a620-368ab1b54b60",
+    "name": "HW06 CI Smoke",
+    "description": "Small deterministic CI demonstration collection. First run uses expectedStatus=200 for PASS; later the environment will intentionally change expectedStatus to 201 to demonstrate one detected failing assertion.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const sid = pm.environment.get(\"studentId\") || \"23127531\";",
+          "pm.request.headers.upsert({ key: \"X-Student-Id\", value: sid });",
+          "console.log(`[HW06-CI] ${pm.info.requestName} | X-Student-Id: ${sid}`);"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "CI-SMOKE-001 - Products endpoint status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code matches CI expectation\", function () {",
+              "  pm.expect(pm.response.code).to.equal(Number(pm.environment.get(\"expectedStatus\")));",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+name: HW06 API Tests
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout HW06 repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Clone eShop SUT
+        run: git clone --depth 1 https://github.com/ttbhanh/eshop-sut.git sut
+
+      - name: Install SUT dependencies
+        working-directory: sut/backend
+        run: npm install
+
+      - name: Start SUT
+        working-directory: sut/backend
+        run: |
+          nohup node server.js > "$RUNNER_TEMP/eshop-backend.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/eshop-backend.pid"
+
+      - name: Wait for SUT
+        run: |
+          for i in {1..30}; do
+            if curl --fail --silent http://localhost:3000/api/products > /dev/null; then
+              echo "SUT is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "SUT did not become ready"
+          cat "$RUNNER_TEMP/eshop-backend.log" || true
+          exit 1
+
+      - name: Install Newman
+        run: npm install --global newman
+
+      - name: Run real API 2 regression collection
+        run: |
+          newman run postman/HW06_API2_Cart.postman_collection.json             -e postman/HW06_Local_API2.postman_environment.json
+
+      - name: Run CI sample assertion
+        run: |
+          newman run postman/HW06_CI_Smoke.postman_collection.json             -e postman/HW06_CI.postman_environment.json
