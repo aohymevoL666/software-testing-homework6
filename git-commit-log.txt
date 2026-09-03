@@ -1,3 +1,5 @@
+57b4dec | 2026-09-03 14:37:46 +0700 | lazyguitare | docs: fix final submission references and evidence naming
+1a32822 | 2026-09-03 14:26:26 +0700 | lazyguitare | docs: add final PDF reports and git history
 3d97b7f | 2026-09-03 14:21:30 +0700 | lazyguitare | docs: add final HW06 report and self-assessment
 6633d1e | 2026-09-03 14:16:33 +0700 | lazyguitare | docs: add API test generator design and pseudocode
 2e03c2b | 2026-09-03 14:15:32 +0700 | lazyguitare | docs: add self-drawn API test generator diagram
