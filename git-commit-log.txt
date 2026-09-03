@@ -1,0 +1,28 @@
+3d97b7f | 2026-09-03 14:21:30 +0700 | lazyguitare | docs: add final HW06 report and self-assessment
+6633d1e | 2026-09-03 14:16:33 +0700 | lazyguitare | docs: add API test generator design and pseudocode
+2e03c2b | 2026-09-03 14:15:32 +0700 | lazyguitare | docs: add self-drawn API test generator diagram
+2469fc7 | 2026-09-03 14:06:58 +0700 | lazyguitare | docs: add HW06 AI audit and critique
+402ac63 | 2026-09-03 14:04:32 +0700 | lazyguitare | test: add consolidated test case workbook
+d3903cd | 2026-09-03 13:56:18 +0700 | lazyguitare | test: add Postman Console evidence
+916e0ff | 2026-09-03 06:29:04 +0700 | lazyguitare | ci: restore passing state and record CI evidence
+31fa261 | 2026-09-03 06:25:47 +0700 | lazyguitare | ci: demonstrate failing API assertion
+170ab50 | 2026-09-03 06:23:57 +0700 | lazyguitare | ci: add passing API test workflow
+f842e45 | 2026-09-03 06:19:34 +0700 | lazyguitare | docs: link confirmed bugs to GitHub issues
+60b9b43 | 2026-09-03 06:11:25 +0700 | lazyguitare | test(api3): add security bug evidence
+fa685f6 | 2026-09-03 06:08:06 +0700 | lazyguitare | test(api3): record access control execution and security bugs
+09cb722 | 2026-09-03 06:04:12 +0700 | lazyguitare | test(api3): implement access control tests in Postman
+8b958b8 | 2026-09-03 06:01:19 +0700 | lazyguitare | test(api3): extend access control tests with human cases
+b30def1 | 2026-09-03 05:58:50 +0700 | lazyguitare | test(api3): audit access control AI test cases
+f40bb27 | 2026-09-03 05:56:35 +0700 | lazyguitare | test(api3): generate access control API test cases
+9ad20c3 | 2026-09-03 05:53:49 +0700 | lazyguitare | test(api2): record shopping cart execution results
+61a38bb | 2026-09-02 17:56:08 +0700 | lazyguitare | test(api2): implement shopping cart tests in Postman
+510f006 | 2026-09-02 17:53:14 +0700 | lazyguitare | test(api2): extend shopping cart tests with human cases
+055626f | 2026-09-02 17:51:54 +0700 | lazyguitare | test(api2): audit shopping cart AI test cases
+df26fc1 | 2026-09-02 17:50:22 +0700 | lazyguitare | test(api2): generate shopping cart API test cases
+dca3af0 | 2026-09-02 17:48:07 +0700 | lazyguitare | test(api1): record registration execution and bug evidence
+7dd5bb7 | 2026-09-02 17:43:33 +0700 | lazyguitare | test(api1): record registration execution and discovered bug
+65eb19a | 2026-09-02 17:40:27 +0700 | lazyguitare | test(api1): implement registration tests in Postman
+22f3dae | 2026-09-02 17:37:32 +0700 | lazyguitare | test(api1): extend registration tests with human cases
+36347f3 | 2026-09-02 17:35:59 +0700 | lazyguitare | test(api1): audit registration AI test cases
+7f40428 | 2026-09-02 17:33:27 +0700 | lazyguitare | test(api1): generate registration API test cases
+2aed0d3 | 2026-09-02 17:25:54 +0700 | lazyguitare | chore: initialize HW06 API testing workspace
