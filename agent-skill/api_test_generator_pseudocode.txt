@@ -1,0 +1,127 @@
+ALGORITHM GenerateAPITests(apiSpec, endpoint)
+
+INPUT:
+    apiSpec
+    selected endpoint and HTTP method
+
+OUTPUT:
+    generatedCases
+
+1. requirements <- ParseSpecification(apiSpec, endpoint)
+
+2. endpointModel <- Extract:
+       method
+       path
+       authentication
+       authorization
+       request parameters
+       request body fields
+       response information
+       explicit constraints
+       state dependencies
+
+3. candidates <- empty list
+
+4. ADD HappyPathCase(endpointModel) to candidates
+
+5. FOR EACH request field f:
+       partitions <- BuildPartitions(f)
+       FOR EACH partition p:
+           ADD CreateCase(f, p) to candidates
+
+       ADD missing-field case when applicable
+       ADD null-value case when applicable
+       ADD wrong-type case when applicable
+       ADD boundary cases when applicable
+
+6. IF authentication is required:
+       ADD no-token case
+       ADD empty-token case
+       ADD malformed-token case
+       ADD tampered-token case
+       ADD expired-token case when applicable
+       ADD authentication-scheme variations
+
+7. IF authorization/role requirement exists:
+       FOR EACH relevant role:
+           ADD role-access case
+       ADD missing-role/null-role cases when applicable
+       ADD privilege-escalation candidates
+       ADD cross-user/access-control candidates
+
+8. IF endpoint has state dependencies:
+       transitions <- DeriveStateTransitions(endpointModel)
+       FOR EACH transition:
+           ADD pre-state/action/post-state test
+
+9. ADD protocol cases when meaningful:
+       unsupported methods
+       malformed JSON
+       unusual Content-Type
+       unexpected extra fields
+
+10. ADD response checks:
+       status
+       JSON type
+       required fields if specified
+       forbidden sensitive fields
+
+11. FOR EACH candidate case c:
+       c.coverage_basis <- IdentifyRequirementSource(c, requirements)
+
+       IF oracle comes directly from explicit requirement:
+           c.confidence <- HIGH
+       ELSE IF oracle is inferred from schema/context:
+           c.confidence <- MEDIUM
+       ELSE:
+           c.confidence <- LOW
+           mark c as requiring human clarification
+
+12. candidates <- RemoveDuplicates(candidates)
+
+13. WHILE count(candidates) < target AND useful uncovered dimensions exist:
+       generate additional non-duplicate partitions
+
+14. RETURN candidates
+
+
+ALGORITHM HumanAudit(generatedCases, authoritativeSpec)
+
+INPUT:
+    generatedCases
+    authoritativeSpec
+
+OUTPUT:
+    auditedCases
+
+FOR EACH case c in generatedCases:
+
+    IF c.expectedResult is explicitly supported by authoritativeSpec:
+        c.auditLabel <- VALID
+
+    ELSE IF c.expectedResult contradicts authoritativeSpec
+            OR relies on a known false assumption:
+        c.auditLabel <- INVALID
+        c.correctedOracle <- explain why the original oracle is unsupported
+
+    ELSE:
+        c.auditLabel <- INCOMPLETE
+        c.correctedOracle <- convert to characterization
+                             OR define the missing requirement needed
+
+RETURN auditedCases
+
+
+ALGORITHM EvaluateExecution(auditedCase, actualResponse)
+
+IF auditedCase.auditLabel == VALID:
+    IF actualResponse violates auditedCase.correctedOracle:
+        RETURN "Candidate genuine bug"
+    ELSE:
+        RETURN "PASS"
+
+IF auditedCase.auditLabel == INCOMPLETE:
+    RETURN "Characterization result; do not declare bug without requirement"
+
+IF auditedCase.auditLabel == INVALID:
+    RETURN "Do not use original AI oracle for defect decision"
