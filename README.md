@@ -83,7 +83,7 @@ The deductions reflect conservative self-assessment for incomplete execution of 
 
 ## Main Submission Artifacts
 
-- Main report: `report/HW06_Report.md` and PDF version
+- Main report: `reports/HW06_Report.md` and PDF version
 - AI audit: `audit/HW06_AI_Audit.md` and PDF version
 - AI critique: `audit/HW06_AI_Critique.md`
 - Test workbook: `test-cases/HW06_Test_Cases_and_Summary_23127531.xlsx`

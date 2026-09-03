@@ -21,7 +21,7 @@ The workflow starts the eShop SUT on the GitHub-hosted runner, waits for `http:/
 - **Observed workflow result:** **PASS**
 - **Observed duration:** approximately **28 seconds**
 - **Evidence:** `evidence/ci_pass_run.png`
-- **GitHub Actions run URL:** `PASTE_PASS_RUN_URL`
+- **GitHub Actions run URL:** `https://github.com/aohymevoL666/software-testing-homework6/actions/runs/33694910268`
 
 This run demonstrates that the SUT can be started in GitHub Actions and that the API regression/smoke tests execute successfully.
 
@@ -34,7 +34,7 @@ This run demonstrates that the SUT can be started in GitHub Actions and that the
 - **Observed workflow result:** **FAIL**
 - **Observed duration:** approximately **24 seconds**
 - **Evidence:** `evidence/ci_fail_run.png`
-- **GitHub Actions run URL:** `PASTE_FAIL_RUN_URL`
+- **GitHub Actions run URL:** `https://github.com/aohymevoL666/software-testing-homework6/actions/runs/33695041183`
 
 The second run intentionally changes only the test oracle. The SUT itself is not modified. The purpose is to show that the CI pipeline correctly reports a regression/test failure when an assertion does not match the observed API response.
 

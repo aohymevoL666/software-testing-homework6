@@ -356,7 +356,7 @@ The strongest defects were found when the specification provided a clear oracle,
 
 | Requirement | Artifact |
 |---|---|
-| Main report | `report/HW06_Report.md` + PDF |
+| Main report | `reports/HW06_Report.md` + PDF |
 | Public repository | `https://github.com/aohymevoL666/software-testing-homework6` |
 | Postman collections | `postman/*.postman_collection.json` |
 | Newman reports | `reports/newman/*.html` |
